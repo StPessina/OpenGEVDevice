@@ -16,10 +16,6 @@ DeviceWrapper::DeviceWrapper()
     RGBMap = new PixelMap(GVSP_PIX_RGB8, 320,240,0,0,0,0);
     DepthRGBMap = new PixelMap(GVSP_PIX_MONO16_RGB8, 320,240,0,0,0,0);
 
-    for (int i = 0; i < 10; ++i) {
-        historyValue[i]=0;
-    }
-
     openni::OpenNI::initialize ();
     //const char *cstr = file_name.c_str();
     device_.open(openni::ANY_DEVICE);
@@ -55,32 +51,47 @@ void DeviceWrapper::setupTimer()
 
 void DeviceWrapper::readDataFromCam()
 {
+    if(iteration<4294967296 &&
+            sumTotal<4294967296 &&
+            sumAcquireFrame<4294967296 &&
+            sumSendData<4294967296)
+        iteration++;
+    else {
+        iteration=1;
+        sumTotal=0;
+        sumAcquireFrame=0;
+        sumSendData=0;
+    }
+
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
     ir_.readFrame (&irf_);
     color_.readFrame (&colorf_);
 
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    long acquireFrame = std::chrono::duration_cast<std::chrono::microseconds>(end- start).count();
+
+    start = std::chrono::steady_clock::now();
+
     sendDepthDataStream();
     sendRgbDataStream();
     sendDepthRgbDataStream();
 
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    end = std::chrono::steady_clock::now();
+    long sendData = std::chrono::duration_cast<std::chrono::microseconds>(end- start).count();
 
+    long value = acquireFrame+sendData;
 
-    long value = std::chrono::duration_cast<std::chrono::microseconds>(end- start).count();
-
-    for (int i = 1; i < 10; ++i)
-        historyValue[i-1]=historyValue[i];
-    historyValue[9]=value;
-
-    sum=0;
-    for (int i = 0; i < 10; ++i)
-        sum+=historyValue[i];
-    sum/=10;
+    sumTotal+=value;
+    sumAcquireFrame+=acquireFrame;
+    sumSendData+=sendData;
 
     std::cout << "Send value time "
                   << value
-                  << "us. (average: "<<sum<<")\n";
+                  << "us. (average: "<<sumTotal/iteration<<" us"
+                  <<" - Acquire frame: "<<sumAcquireFrame/iteration<<" us"
+                  <<" - Send data: "<<sumSendData/iteration<<" us"
+                  <<" )\n";
 }
 
 void DeviceWrapper::sendDepthDataStream()

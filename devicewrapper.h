@@ -42,8 +42,13 @@ public:
 
     log4cpp::Category &logger = log4cpp::Category::getInstance("ComponentLog");
 
-    long* historyValue = new long[10];
-    long sum = 0;
+    //long* historyValue = new long[10];
+    long sumTotal = 0;
+    long sumAcquireFrame = 0;
+    long sumSendData = 0;
+
+    long iteration = 0;
+
 
     bool singleShoot = false;
 
