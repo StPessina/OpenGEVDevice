@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include <opengv.h>
+#include <opengev.h>
 
 #include <Application/gvapplication.h>
 

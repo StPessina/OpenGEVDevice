@@ -2,7 +2,7 @@
 
 DeviceWrapper::DeviceWrapper()
 {
-    device = new GVDevice("MAN_NAME","MODEL_NAME","DEVICE_VERSION");
+    device = new GVDevice("ASUS","XTION PRO LIVE","DEVICE_VERSION");
 
     device->createStreamChannel();
     device->createStreamChannel();
@@ -10,22 +10,17 @@ DeviceWrapper::DeviceWrapper()
 
     connect(this,SIGNAL(initialization()),this,SLOT(setupTimer()));
 
-    //value = (char*) malloc(2*sizeof(char));
-
     depthMap = new PixelMap(GVSP_PIX_MONO16, 320,240,0,0,0,0);
     RGBMap = new PixelMap(GVSP_PIX_RGB8, 320,240,0,0,0,0);
     DepthRGBMap = new PixelMap(GVSP_PIX_MONO16_RGB8, 320,240,0,0,0,0);
 
     openni::OpenNI::initialize ();
-    //const char *cstr = file_name.c_str();
     device_.open(openni::ANY_DEVICE);
     ir_.create (device_, openni::SENSOR_DEPTH);
     ir_.start ();
     device_.setImageRegistrationMode (openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR);
     color_.create (device_, openni::SENSOR_COLOR);
     color_.start();
-
-
 }
 
 void DeviceWrapper::setupTimer()

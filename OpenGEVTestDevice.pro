@@ -9,7 +9,7 @@ QT       += network
 
 QT += gui
 
-TARGET = OpenGVTest
+TARGET = OpenGEVTestDevice
 CONFIG   += console
 CONFIG   -= app_bundle
 
@@ -24,11 +24,11 @@ HEADERS += \
 
 QMAKE_CXXFLAGS+= -std=c++11
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build/build-desktop-qt.3GCC-64bit-debug/release/ -lOpenGV
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build/build-desktop-qt.3GCC-64bit-debug/debug/ -lOpenGV
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build/build-opengev-qt.3GCC-64bit-debug/release/ -lOpenGEV
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build/build-opengev-qt.3GCC-64bit-debug/debug/ -lOpenGEV
 else:unix {
-    CONFIG(debug, debug|release): LIBS += -L$$PWD/../build/build-desktop-qt4.8GCC-64bit-debug -lOpenGV
-    CONFIG(release, release|debug): LIBS += -L$$PWD/../build/build-desktop-qt4.8GCC-64bit-release -lOpenGV
+    CONFIG(debug, debug|release): LIBS += -L$$PWD/../build/build-opengev-qt4.8GCC-64bit-debug -lOpenGEV
+    CONFIG(release, release|debug): LIBS += -L$$PWD/../build/build-opengev-qt4.8GCC-64bit-release -lOpenGEV
 }
 
 INCLUDEPATH += $$PWD/../src

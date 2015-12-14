@@ -5,9 +5,10 @@
 
 #include <QThread>
 
-#include <opengv.h>
+#include <opengev.h>
 
-#include "devicewrapper.h"
+#include "OpenNICamera/opennicamera.h"
+
 
 using namespace std;
 
@@ -15,10 +16,10 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    OpenGV::configure();
+    OpenGEV::configure();
 
-    DeviceWrapper* myDevice = new DeviceWrapper();
-    myDevice->start();
+    OpenNICamera myDevice;
+    myDevice.start();
 
     return a.exec();
 }
