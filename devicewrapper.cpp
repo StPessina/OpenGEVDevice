@@ -10,17 +10,26 @@ DeviceWrapper::DeviceWrapper()
 
     connect(this,SIGNAL(initialization()),this,SLOT(setupTimer()));
 
-    depthMap = new PixelMap(GVSP_PIX_MONO16, 320,240,0,0,0,0);
-    RGBMap = new PixelMap(GVSP_PIX_RGB8, 320,240,0,0,0,0);
-    DepthRGBMap = new PixelMap(GVSP_PIX_MONO16_RGB8, 320,240,0,0,0,0);
+    depthMap = new PixelMap(GVSP_PIX_MONO16, SIZE_X,SIZE_Y,0,0,0,0);
+    RGBMap = new PixelMap(GVSP_PIX_RGB8, SIZE_X,SIZE_Y,0,0,0,0);
+    DepthRGBMap = new PixelMap(GVSP_PIX_MONO16_RGB8, SIZE_X,SIZE_Y,0,0,0,0);
 
-    openni::OpenNI::initialize ();
-    device_.open(openni::ANY_DEVICE);
-    ir_.create (device_, openni::SENSOR_DEPTH);
-    ir_.start ();
-    device_.setImageRegistrationMode (openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR);
-    color_.create (device_, openni::SENSOR_COLOR);
-    color_.start();
+    for (int var = 0; var < SIZE_X*SIZE_Y*2; var+=2) {
+        depthMap->data[var] = 0x0;
+        depthMap->data[var] = 0xF;
+    }
+
+
+    for (int var = 0; var < SIZE_X*SIZE_Y*3; var+=2) {
+        RGBMap->data[var] = 0x0;
+        RGBMap->data[var] = 0xF;
+    }
+
+
+    for (int var = 0; var < SIZE_X*SIZE_Y*5; var+=2) {
+        DepthRGBMap->data[var] = 0x0;
+        DepthRGBMap->data[var] = 0xF;
+    }
 }
 
 void DeviceWrapper::setupTimer()
@@ -46,22 +55,16 @@ void DeviceWrapper::setupTimer()
 
 void DeviceWrapper::readDataFromCam()
 {
-    if(iteration<4294967296 &&
-            sumTotal<4294967296 &&
-            sumAcquireFrame<4294967296 &&
-            sumSendData<4294967296)
+    if(iteration<100)
         iteration++;
     else {
+        sumTotal/=iteration;
+        sumAcquireFrame/=iteration;
+        sumSendData/=iteration;
         iteration=1;
-        sumTotal=0;
-        sumAcquireFrame=0;
-        sumSendData=0;
     }
 
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-
-    ir_.readFrame (&irf_);
-    color_.readFrame (&colorf_);
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     long acquireFrame = std::chrono::duration_cast<std::chrono::microseconds>(end- start).count();
@@ -82,21 +85,17 @@ void DeviceWrapper::readDataFromCam()
     sumSendData+=sendData;
 
     std::cout << "Send value time "
-                  << value
-                  << "us. (average: "<<sumTotal/iteration<<" us"
-                  <<" - Acquire frame: "<<sumAcquireFrame/iteration<<" us"
-                  <<" - Send data: "<<sumSendData/iteration<<" us"
-                  <<" )\n";
+              << value
+              << "us. (average: "<<sumTotal/iteration<<" us"
+              <<" - Acquire frame: "<<sumAcquireFrame/iteration<<" us"
+             <<" - Send data: "<<sumSendData/iteration<<" us"
+            <<" )\n";
 }
 
 void DeviceWrapper::sendDepthDataStream()
 {
     if(!device->getStreamChannel(0)->isChannelOpen())
         return;
-
-    depthMap->data = (char*) irf_.getData();
-    depthMap->sizex = irf_.getWidth();
-    depthMap->sizey = irf_.getHeight();
 
     device->getStreamChannel(0)->writeIncomingData(*depthMap);
 }
@@ -106,10 +105,6 @@ void DeviceWrapper::sendRgbDataStream()
     if(!device->getStreamChannel(1)->isChannelOpen())
         return;
 
-    RGBMap->data = (char*) colorf_.getData();
-    RGBMap->sizex = colorf_.getWidth();
-    RGBMap->sizey = colorf_.getHeight();
-
     device->getStreamChannel(1)->writeIncomingData(*RGBMap);
 }
 
@@ -117,25 +112,6 @@ void DeviceWrapper::sendDepthRgbDataStream()
 {
     if(!device->getStreamChannel(2)->isChannelOpen())
         return;
-
-    char* depthData = (char*) irf_.getData();
-    char* rgbData = (char*) colorf_.getData();
-
-    int depth_idx = 0;
-    int rgb_idx = 0;
-    int char_idx = 0;
-    for (int v = 0; v < DepthRGBMap->sizey; ++v)
-    {
-        for (int u = 0; u < DepthRGBMap->sizex; ++u, depth_idx+=2, rgb_idx+=3, char_idx+=5)
-        {
-            DepthRGBMap->data[char_idx] = depthData[depth_idx];
-            DepthRGBMap->data[char_idx+1] = depthData[depth_idx+1];
-
-            DepthRGBMap->data[char_idx+2] = rgbData[rgb_idx];
-            DepthRGBMap->data[char_idx+3] = rgbData[rgb_idx+1];
-            DepthRGBMap->data[char_idx+4] = rgbData[rgb_idx+2];
-        }
-    }
 
     device->getStreamChannel(2)->writeIncomingData(*DepthRGBMap);
 }

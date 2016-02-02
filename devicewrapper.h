@@ -26,6 +26,8 @@
 
 #include <OpenNI.h>
 
+#define SIZE_X 640
+#define SIZE_Y 480
 
 class DeviceWrapper : public QThread
 {

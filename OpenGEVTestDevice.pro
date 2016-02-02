@@ -34,9 +34,10 @@ else:unix {
 INCLUDEPATH += $$PWD/../src
 DEPENDPATH += $$PWD/../src
 
-    INCLUDEPATH += /usr/local/include/log4cpp \
-                   /usr/include/boost \
-                   /usr/include/openni2
+    INCLUDEPATH += /usr/include/boost \
+                   /usr/include/openni2 \
+                   /usr/local/include/log4cpp \
+                   /usr/local/include/libfreenect2
 
     LIBS += "-L/usr/lib" \
              -lboost_system
@@ -46,3 +47,5 @@ DEPENDPATH += $$PWD/../src
     LIBS += -llog4cpp
 
     LIBS += -lOpenNI2
+
+    LIBS += -lfreenect2
