@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.2.2, 2016-02-07T16:22:42. -->
+<!-- Written by QtCreator 3.2.2, 2016-02-05T12:08:41. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{b1feab0f-b3d6-4752-8265-647b9af74d44}</value>
+  <value type="QByteArray">{429b46f7-1c45-4899-b86c-aa7a7141efd1}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -237,7 +237,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">OpenGEVTestDevice</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/media/Data/Dropbox/VI_tesi_LM/Code/OpenGEV/test-device/OpenGEVTestDevice.pro</value>
-    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">2</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">1</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">OpenGEVTestDevice.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseTerminal">true</value>

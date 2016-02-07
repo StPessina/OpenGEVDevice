@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <signal.h>
 
 #include <QThread>
 
@@ -14,7 +15,18 @@
 
 #include "Kinect/kinectv2camera.h"
 
+KinectV2Camera *kinect;
 
+/*
+ * Check signal interrupt because stop starded kinect
+ * device can freeze operative system
+ *
+*/
+void sigint_handler(int s)
+{
+  std::cout<<"quit signal called"<<std::endl;
+  kinect->quit();
+}
 
 using namespace std;
 
@@ -34,8 +46,10 @@ int main(int argc, char *argv[])
             return a.exec();
         }
         if(device==2) {
-            KinectV2Camera kinect;
-            kinect.start();
+            kinect = new KinectV2Camera;
+            kinect->start();
+            //Correctly shutdown device on signal interrupt on console
+            signal(SIGINT,sigint_handler);
             return a.exec();
         }
         if(device==3) {
