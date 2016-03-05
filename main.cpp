@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
             return a.exec();
         }
         if(device==3) {
-            DeviceWrapper w;
+            int sizex = strtol(argv[2], &p, 10);
+            int sizey = strtol(argv[3], &p, 10);
+            DeviceWrapper w(sizex, sizey);
             w.start();
             return a.exec();
         }

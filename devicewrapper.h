@@ -26,14 +26,11 @@
 
 #include <OpenNI.h>
 
-#define SIZE_X 640
-#define SIZE_Y 480
-
 class DeviceWrapper : public QThread
 {
     Q_OBJECT
 public:
-    DeviceWrapper();
+    DeviceWrapper(int sizex, int sizey);
 
     std::string a = "MAN_NAME";
     std::string b = "MODEL_NAME";

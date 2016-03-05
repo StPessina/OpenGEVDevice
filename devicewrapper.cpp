@@ -1,8 +1,8 @@
 #include "devicewrapper.h"
 
-DeviceWrapper::DeviceWrapper()
+DeviceWrapper::DeviceWrapper(int sizex, int sizey)
 {
-    device = new GVDevice("ASUS","XTION PRO LIVE","DEVICE_VERSION");
+    device = new GVDevice("WRAPPER_DEVICE","WRAPPER_DEVICE","DEVICE_VERSION");
 
     device->createStreamChannel();
     device->createStreamChannel();
@@ -10,23 +10,23 @@ DeviceWrapper::DeviceWrapper()
 
     connect(this,SIGNAL(initialization()),this,SLOT(setupTimer()));
 
-    depthMap = new PixelMap(GVSP_PIX_MONO16, SIZE_X,SIZE_Y,0,0,0,0);
-    RGBMap = new PixelMap(GVSP_PIX_RGB8, SIZE_X,SIZE_Y,0,0,0,0);
-    DepthRGBMap = new PixelMap(GVSP_PIX_MONO16_RGB8, SIZE_X,SIZE_Y,0,0,0,0);
+    depthMap = new PixelMap(GVSP_PIX_MONO16, sizex,sizey,0,0,0,0);
+    RGBMap = new PixelMap(GVSP_PIX_RGB8, sizex,sizey,0,0,0,0);
+    DepthRGBMap = new PixelMap(GVSP_PIX_MONO16_RGB8, sizex,sizey,0,0,0,0);
 
-    for (int var = 0; var < SIZE_X*SIZE_Y*2; var+=2) {
+    for (int var = 0; var < sizex*sizey*2; var+=2) {
         depthMap->data[var] = 0x0;
         depthMap->data[var] = 0xF;
     }
 
 
-    for (int var = 0; var < SIZE_X*SIZE_Y*3; var+=2) {
+    for (int var = 0; var < sizex*sizey*3; var+=2) {
         RGBMap->data[var] = 0x0;
         RGBMap->data[var] = 0xF;
     }
 
 
-    for (int var = 0; var < SIZE_X*SIZE_Y*5; var+=2) {
+    for (int var = 0; var < sizex*sizey*5; var+=2) {
         DepthRGBMap->data[var] = 0x0;
         DepthRGBMap->data[var] = 0xF;
     }
